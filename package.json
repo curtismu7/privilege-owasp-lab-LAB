@@ -1,0 +1,31 @@
+{
+  "name": "privilege-owasp-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Privilege OWASP Lab: watch an identity admin automate PingOne with Ping CLI. 14 allow-listed, read-only pingcli commands streamed to the browser, with an easy-read table view. Mock plays canned output offline; Real runs the pinned pingcli binary against your own environment. Standalone version of the AI-DEMO2 /pingcli page.",
+  "license": "MIT",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "start": "npm start -w server",
+    "test": "npm test -w server && npm test -w web && node --test scripts/*.test.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "reset": "node scripts/reset.mjs",
+    "docker:up": "node scripts/compose-real.mjs up --build -d",
+    "prepare": "git config core.hooksPath .githooks || true",
+    "talk-track": "node scripts/build-talk-track.mjs",
+    "content-pack": "node scripts/build-content-pack.mjs && node scripts/validate-content-pack.mjs",
+    "build": "npm run build -w web",
+    "e2e": "node scripts/e2e.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0",
+    "playwright": "^1.64.1"
+  }
+}

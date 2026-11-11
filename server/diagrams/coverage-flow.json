@@ -1,0 +1,123 @@
+{
+  "schema": "diagram-studio/1",
+  "id": "coverage-flow",
+  "title": "How the Privilege OWASP lab answers one coverage question",
+  "lede": "{{castAdmin}} opens one coverage dataset. The lab answers from its in-process dataset table (Mock) or one read-only PingOne management-API call with a worker token (Real). In Mock nothing leaves the machine.",
+  "groups": {
+    "client": {
+      "label": "Browser",
+      "color": "grey"
+    },
+    "lab": {
+      "label": "This lab",
+      "color": "dark"
+    },
+    "cli": {
+      "label": "Ping CLI",
+      "color": "red"
+    },
+    "pingone": {
+      "label": "PingOne (SaaS)",
+      "color": "blue"
+    }
+  },
+  "nodes": [
+    {
+      "id": "browser",
+      "label": "Browser: coverage page",
+      "group": "client",
+      "x": 0,
+      "y": 120
+    },
+    {
+      "id": "lab",
+      "label": "Lab server (loopback, allow-list)",
+      "group": "lab",
+      "x": 320,
+      "y": 120,
+      "sub": [
+        "13 fixed datasets",
+        "no caller paths",
+        "static deck wording"
+      ]
+    },
+    {
+      "id": "token",
+      "label": "Worker token (Real, once)",
+      "group": "pingone",
+      "x": 640,
+      "y": 0
+    },
+    {
+      "id": "api",
+      "label": "PingOne management API (Real, read-only)",
+      "group": "pingone",
+      "x": 640,
+      "y": 260
+    }
+  ],
+  "edges": [
+    {
+      "source": "browser",
+      "target": "lab",
+      "label": "GET /api/stream?commandKey=..."
+    },
+    {
+      "source": "lab",
+      "target": "token",
+      "label": "client credentials, once (Real only)",
+      "dashed": true
+    },
+    {
+      "source": "lab",
+      "target": "api",
+      "label": "read-only coverage evidence (Real only)",
+      "dashed": true
+    },
+    {
+      "source": "lab",
+      "target": "browser",
+      "label": "SSE: meta, chunk..., done"
+    }
+  ],
+  "steps": [
+    {
+      "title": "Open a dataset",
+      "what": "The page sends only a dataset key. Anything that is not one of the 13 keys is refused with 400 before anything answers.",
+      "edges": [
+        0
+      ],
+      "hop": "browser-lab"
+    },
+    {
+      "title": "Mock answers in-process",
+      "what": "The lab serves the static deck wording from its own dataset table: no binary, no network, nothing leaves the machine.",
+      "edges": [
+        0
+      ]
+    },
+    {
+      "title": "A worker token (Real only)",
+      "what": "Real mode gets a worker token with client credentials once per session and stores it privately. Mock simulates this hop.",
+      "edges": [
+        1
+      ],
+      "hop": "lab-token"
+    },
+    {
+      "title": "Read-only evidence (Real only)",
+      "what": "One read-only management-API call fetches live evidence beside the static claims. Mock never makes this call.",
+      "edges": [
+        2
+      ],
+      "hop": "lab-api"
+    },
+    {
+      "title": "Stream it back",
+      "what": "The dataset streams to the page as server-sent events and the page turns it into the easy-read table or form.",
+      "edges": [
+        3
+      ]
+    }
+  ]
+}

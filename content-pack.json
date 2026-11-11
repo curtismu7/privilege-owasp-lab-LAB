@@ -1,0 +1,294 @@
+{
+  "schema": "demo-content-pack/1",
+  "id": "privilege-owasp-lab",
+  "title": "Privilege OWASP Lab",
+  "version": "0.1.0",
+  "demo": {
+    "id": "privilege-owasp-lab",
+    "name": "Privilege OWASP Lab",
+    "catalog": "D000",
+    "baseUrl": "http://localhost:7811",
+    "doctor": "/api/health",
+    "tags": [
+      "pingone-privilege",
+      "ai-agent-security",
+      "agent-identity",
+      "authorization-policy",
+      "learning",
+      "simulated"
+    ]
+  },
+  "glossary": [
+    {
+      "id": "coverage-table",
+      "term": "Coverage table (deck p.21)",
+      "definition": "The slide-21 table of the Privilege Capability Overview deck: one row per OWASP Agentic AI Top 10 category, the Privilege component that covers it (Gateway, AIGuard or both), and how, with the two stated gaps (ASI04, ASI06) in amber.",
+      "aliases": [
+        "slide-21 table"
+      ]
+    },
+    {
+      "id": "agent-goal-hijack",
+      "term": "Agent Goal Hijack (ASI01)",
+      "definition": "An attacker smuggles instructions into content the agent reads and steers it away from its real goal. Privilege answers with injection, jailbreak and hidden-instruction detection in AIGuard.",
+      "aliases": [
+        "ASI01"
+      ]
+    },
+    {
+      "id": "identity-privilege-abuse",
+      "term": "Identity and Privilege Abuse (ASI03)",
+      "definition": "Agents acting with over-broad or shared credentials turn a compromise into a privilege compromise. Privilege answers with per-user virtual keys, least-privilege scopes, RBAC and live revocation.",
+      "aliases": [
+        "ASI03"
+      ]
+    },
+    {
+      "id": "agentic-supply-chain",
+      "term": "Agentic Supply Chain (ASI04)",
+      "definition": "Malicious tool definitions and typosquatted tools install attacker behaviour before a run. AIGuard detects both; fingerprint pinning is the stated remaining gap.",
+      "aliases": [
+        "ASI04"
+      ]
+    },
+    {
+      "id": "memory-poisoning",
+      "term": "Memory and Context Poisoning (ASI06)",
+      "definition": "A fact or instruction planted in agent memory changes every future decision. Memory-write inspection ships in AIGuard; gateway integration is in progress.",
+      "aliases": [
+        "ASI06"
+      ]
+    },
+    {
+      "id": "cascading-failures",
+      "term": "Cascading Agent Failures (ASI08)",
+      "definition": "One runaway agent amplifies through the chain. The gateway caps rate and budget, trips a circuit breaker and streams events to the SIEM; behaviour scoring supplements this and ASI10.",
+      "aliases": [
+        "ASI08"
+      ]
+    },
+    {
+      "id": "rogue-agents",
+      "term": "Rogue Agents (ASI10)",
+      "definition": "Unregistered agents have no owner, scope or audit trail. No agent reaches a model, tool or peer without a valid scoped key from the agent registry.",
+      "aliases": [
+        "ASI10"
+      ]
+    },
+    {
+      "id": "gateway",
+      "term": "The Gateway",
+      "definition": "Privilege's identity and chokepoint layer: it proves who the agent is and what it may do on every hop.",
+      "aliases": [
+        "agent gateway"
+      ]
+    },
+    {
+      "id": "aiguard",
+      "term": "AIGuard",
+      "definition": "Privilege's content and behaviour layer: it inspects prompts, tool requests, tool definitions, code-shaped payloads, memory writes and outputs.",
+      "aliases": []
+    }
+  ],
+  "sources": [
+    {
+      "id": "capability-deck",
+      "title": "PingOne Privilege Capability Overview deck (page 21, 2 Nov 2026)",
+      "url": "https://www.pingidentity.com/",
+      "kind": "vendor",
+      "use": "The coverage wording for all ten ASI categories and the two stated gaps.",
+      "status": "read",
+      "checked": "2026-11-11"
+    },
+    {
+      "id": "owasp-asi",
+      "title": "OWASP Agentic Security Initiative",
+      "url": "https://genai.owasp.org/",
+      "kind": "standard",
+      "use": "The ASI01-ASI10 category definitions the explanations summarise.",
+      "status": "not-read",
+      "checked": "2026-11-11"
+    }
+  ],
+  "cards": [
+    {
+      "id": "try-the-coverage-table",
+      "label": "Scenario 1: The coverage table",
+      "description": "Coverage is claimed per category with a named component, and the gaps are stated, not hidden.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#scenario-the-coverage-table"
+      },
+      "terms": [
+        "coverage-table"
+      ],
+      "story": "S01"
+    },
+    {
+      "id": "try-asi01-goal-hijack",
+      "label": "Scenario 2: ASI01: Agent Goal Hijack",
+      "description": "Catch smuggled instructions at the input boundary, before they become agent behaviour.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#scenario-asi01-goal-hijack"
+      },
+      "terms": [
+        "agent-goal-hijack"
+      ],
+      "story": "S02"
+    },
+    {
+      "id": "try-asi03-identity-abuse",
+      "label": "Scenario 3: ASI03: Identity and Privilege Abuse",
+      "description": "Per-user virtual keys and least-privilege scopes make agent compromise survivable.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#scenario-asi03-identity-abuse"
+      },
+      "terms": [
+        "identity-privilege-abuse"
+      ],
+      "story": "S03"
+    },
+    {
+      "id": "try-asi04-supply-chain",
+      "label": "Scenario 4: ASI04: Agentic Supply Chain",
+      "description": "A stated gap is a control too: say what is not covered yet.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#scenario-asi04-supply-chain"
+      },
+      "terms": [
+        "agentic-supply-chain"
+      ],
+      "story": "S04"
+    },
+    {
+      "id": "try-asi06-memory-poisoning",
+      "label": "Scenario 5: ASI06: Memory and Context Poisoning",
+      "description": "Inspect what is written to memory, not only what is read.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#scenario-asi06-memory-poisoning"
+      },
+      "terms": [
+        "memory-poisoning"
+      ],
+      "story": "S05"
+    },
+    {
+      "id": "try-asi08-cascading-failures",
+      "label": "Scenario 6: ASI08: Cascading Agent Failures",
+      "description": "Cap what any one agent can consume before the chain amplifies.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#scenario-asi08-cascading-failures"
+      },
+      "terms": [
+        "cascading-failures"
+      ],
+      "story": "S06"
+    },
+    {
+      "id": "try-asi10-rogue-agents",
+      "label": "Scenario 7: ASI10: Rogue Agents",
+      "description": "Registration is the only way onto the network.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#scenario-asi10-rogue-agents"
+      },
+      "terms": [
+        "rogue-agents"
+      ],
+      "story": "S07"
+    },
+    {
+      "id": "try-two-layers",
+      "label": "Scenario 8: Gateway vs AIGuard",
+      "description": "Identity enforcement and content inspection are different layers with different jobs.",
+      "group": "try-it",
+      "action": {
+        "type": "route",
+        "href": "/#scenario-two-layers"
+      },
+      "terms": [
+        "gateway",
+        "aiguard"
+      ],
+      "story": "S08"
+    },
+    {
+      "id": "concept-layers",
+      "label": "Gateway vs AIGuard",
+      "description": "Two enforcement layers: who the agent is and what it may do, versus what flows through.",
+      "group": "concept",
+      "action": {
+        "type": "route",
+        "href": "/#scenario-two-layers"
+      },
+      "terms": [
+        "gateway",
+        "aiguard"
+      ]
+    },
+    {
+      "id": "ref-doctor",
+      "label": "Doctor and health",
+      "description": "Preflight checks and the demo-health/1 endpoint.",
+      "group": "setup",
+      "action": {
+        "type": "route",
+        "href": "/api/health"
+      }
+    }
+  ],
+  "stories": [
+    {
+      "id": "S01",
+      "title": "The coverage table",
+      "say": "Start with the slide-21 table: all ten ASI categories, who covers each (Gateway, AIGuard or both), and how - with the two stated gaps in amber."
+    },
+    {
+      "id": "S02",
+      "title": "ASI01: Agent Goal Hijack",
+      "say": "An attacker smuggles instructions into content the agent reads and steers it away from its real goal. AIGuard inspects prompts and retrieved content before the agent acts."
+    },
+    {
+      "id": "S03",
+      "title": "ASI03: Identity and Privilege Abuse",
+      "say": "Agents act with credentials; an over-privileged agent turns a compromise into a privilege compromise. Privilege re-binds every call to the human it acts for, narrows scope, and can revoke live."
+    },
+    {
+      "id": "S04",
+      "title": "ASI04: Agentic Supply Chain",
+      "say": "Malicious tool definitions and typosquatted tools install attacker behaviour before a run. AIGuard detects both; fingerprint pinning is the stated remaining gap."
+    },
+    {
+      "id": "S05",
+      "title": "ASI06: Memory and Context Poisoning",
+      "say": "A planted fact in agent memory becomes a standing backdoor across sessions. Memory-write inspection ships in AIGuard; gateway integration is in progress."
+    },
+    {
+      "id": "S06",
+      "title": "ASI08: Cascading Agent Failures",
+      "say": "One runaway agent amplifies through the chain until a small failure is an outage or a bill. The gateway caps rate and budget, trips a circuit breaker, and streams events to your SIEM."
+    },
+    {
+      "id": "S07",
+      "title": "ASI10: Rogue Agents",
+      "say": "Unregistered agents have no owner, scope or audit trail. No agent reaches a model, tool or peer without a valid scoped key."
+    },
+    {
+      "id": "S08",
+      "title": "Gateway vs AIGuard",
+      "say": "The gateway proves who the agent is and what it may do; AIGuard inspects what flows through. ASI03 and ASI07 need both."
+    }
+  ]
+}

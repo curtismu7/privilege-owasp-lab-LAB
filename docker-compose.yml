@@ -1,0 +1,37 @@
+# OrbStack:  docker compose up --build -d   ->  http://127.0.0.1:7811
+# The server binds 0.0.0.0 INSIDE the container (POWASP_BIND is the opt-in), but the port is published on loopback only.
+# Do not change the 127.0.0.1 below. HOST_PORT must stay 7811 (this app's one allocated port).
+name: privilege-owasp-lab
+
+services:
+  privilege-owasp-lab:
+    restart: unless-stopped
+    build: .
+    ports:
+      - "127.0.0.1:${HOST_PORT:-7811}:7811"
+    environment:
+      PORT: "7811"
+      POWASP_BIND: 0.0.0.0
+      SHELF_URL: ${SHELF_URL:-http://127.0.0.1:4400}
+      # The lab-proxy sends Host = the lab's own name and X-Forwarded-Host = the proxy's name; both must be listed.
+      LAB_ALLOWED_HOSTS: ${LAB_ALLOWED_HOSTS:-privilege-owasp-lab.local.ping-devops.com,local.ping-devops.com}
+      # Start mode. Empty = Real when the four settings below are usable, else Mock. POWASP_MODE=mock or =real forces one.
+      MODE: ${POWASP_MODE:-}
+      # Real (owner-run): passed through from YOUR shell, or from an .env beside this file (git-ignored). Never written here,
+      # never baked into the image. Empty = Real stays disabled and Mock runs.
+      PINGONE_ENVIRONMENT_ID: ${PINGONE_ENVIRONMENT_ID:-}
+      PINGONE_REGION: ${PINGONE_REGION:-}
+      PINGONE_CLIENT_ID: ${PINGONE_CLIENT_ID:-}
+      PINGONE_CLIENT_SECRET: ${PINGONE_CLIENT_SECRET:-}
+    read_only: true
+    # The read-only filesystem needs one writable place: the private token store and temp files (removed on exit).
+    tmpfs: ["/tmp:mode=1777,size=64m"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:7811/api/health').then(r=>r.json()).then(j=>process.exit(j.schema==='demo-health/1'&&j.state==='ready'?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      start_period: 5s
+      start_interval: 2s
+      timeout: 5s
+      retries: 3

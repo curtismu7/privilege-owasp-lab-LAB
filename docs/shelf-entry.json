@@ -1,0 +1,29 @@
+{
+  "demos": [
+    {
+      "id": "privilege-owasp-lab",
+      "name": "Privilege OWASP Lab",
+      "kind": "Tester",
+      "description": "The OWASP Agentic AI Top 10 (ASI01-ASI10) with PingOne Privilege coverage: the slide-21 table from the Capability Overview deck, ten explained category cards, and the Gateway vs AIGuard split. The two stated gaps (ASI04, ASI06) are labelled, not hidden. Mock serves the static deck wording offline; R",
+      "url": "http://localhost:7811",
+      "healthPath": "/api/health",
+      "composeFile": "privilege-owasp-lab-LAB/docker-compose.yml",
+      "composeOverlays": [],
+      "pingProducts": [],
+      "notes": "Host-run: ./scripts/run.sh (port 7811). Docker: docker compose up --build -d (published on 127.0.0.1 only). Mock needs no tenant and no credentials. Real: PINGONE_ENVIRONMENT_ID, PINGONE_REGION, PINGONE_CLIENT_ID, PINGONE_CLIENT_SECRET in ~/Development/.env (host) or passed through compose (Docker). Derived from the AI-DEMO2 /privilege-owasp-top10 page. Catalog id: to be assigned by the owner.",
+      "repo": "https://github.com/curtismu7/privilege-owasp-lab-LAB",
+      "catalogId": "D000",
+      "alsoCatalogIds": [],
+      "tags": [
+        "pingone-privilege",
+        "ai-agent-security",
+        "agent-identity",
+        "authorization-policy",
+        "learning",
+        "simulated",
+        "real"
+      ],
+      "where": "installed"
+    }
+  ]
+}

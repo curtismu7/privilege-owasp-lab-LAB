@@ -1,0 +1,9 @@
+{
+  "_readme": "Copy to customer.config.json (git-ignored) to brand the lab. Only these four cast values are read; everything else is ignored. host is lowercase letters, digits and dashes and becomes <name>@<host>.example in the Mock output. Overrides the chosen vertical's values.",
+  "cast": {
+    "org": "Northwind Retail",
+    "admin": "Jordan Ellis",
+    "envName": "Northwind Storefront",
+    "host": "northwind"
+  }
+}

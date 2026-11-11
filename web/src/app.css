@@ -1,0 +1,160 @@
+/* Privilege OWASP Lab layout. Colours come only from tokens (standalone-ui.css, tokens.css); this file never sets a colour literal
+   and never restyles the shared banner, buttons or chips beyond layout (STANDALONE-UI-PATTERNS.md section 10). */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg-lab); color: var(--text-body); font-family: var(--font-primary); font-size: 14px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); overflow-x: hidden; }
+h1, h2, h3 { color: var(--text); }
+code, pre, .mono { font-family: var(--font-mono); }
+a { color: var(--status-info); }
+
+/* 1. App shell: Core Dark bar in both themes, Ping Red gradient rule, pill nav */
+.shell-bar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 0.6rem 1.25rem; margin: 0 -16px;
+  background: var(--box-dark); color: var(--on-box); border-bottom: 3px solid transparent; border-image: var(--accent-gradient) 1; }
+.shell-brand { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 700; letter-spacing: 0.02em; }
+.shell-logo { width: 1.9rem; height: 1.9rem; border-radius: 4px; background: var(--accent-gradient); color: var(--on-accent); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; }
+.shell-badge { padding: 0.1rem 0.5rem; border-radius: 999px; background: var(--accent-gradient); color: var(--on-accent); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.shell-nav { display: flex; gap: 0.25rem; flex: 1; flex-wrap: wrap; }
+.shell-nav a { padding: 0.3rem 0.75rem; border-radius: 999px; color: var(--on-box); text-decoration: none; font-size: 0.85rem; font-weight: 500; border: 1px solid transparent; }
+.shell-nav a:hover { border-color: var(--on-box); }
+.shell-nav a[aria-current="page"] { background: var(--accent-gradient); color: var(--on-accent); font-weight: 600; }
+.shell-nav a:focus-visible { outline: 3px solid var(--on-box); outline-offset: 2px; }
+.shell-right { display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-size: 0.85rem; }
+.shell-right button { min-height: 32px; padding: 4px 10px; }
+.mode-toggle { display: inline-flex; gap: 0.25rem; }
+@media (max-width: 600px) {
+  .shell-bar { gap: 0.6rem; padding: 0.6rem 1rem; }
+  .shell-nav { order: 3; flex-basis: 100%; }
+}
+
+/* 2-3. Page frame: banner first, then the title */
+.page { max-width: 1100px; margin: 0 auto; padding: 0.5rem 0 3rem; }
+.page-head { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.page-head h1 { margin: 0.75rem 0 0.25rem; font-size: 1.5rem; }
+.page-tools { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.inline { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.85rem; }
+.danger-text { color: var(--danger-text); }
+.lede { margin: 0.5rem 0; max-width: 75ch; }
+.hint, .muted { color: var(--muted); font-size: 0.85rem; }
+.error { color: var(--danger-text); font-weight: 600; }
+.section-label { margin: 1.5rem 0 0.25rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.foot { margin-top: 2rem; }
+
+/* 4. Cards with an accent top edge */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 0.75rem; margin: 0.75rem 0; }
+.card-grid > * { min-width: 0; }
+.card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); border-top: 4px solid var(--accent); padding: 0.9rem 1rem; min-width: 0; }
+.card--neutral { border-top: 4px solid var(--border); }
+.card--focus { outline: 3px solid var(--focus); outline-offset: 2px; }
+.card h3 { margin: 0 0 0.35rem; font-size: 1rem; }
+.card p { margin: 0.25rem 0; font-size: 0.85rem; }
+.howto ol { margin: 0.5rem 0 0; padding-left: 1.25rem; font-size: 0.85rem; }
+
+/* 5. Key-value */
+.kv { display: grid; gap: 0.2rem 0.9rem; margin: 0.6rem 0 0; font-size: 0.85rem; }
+.kv__row { display: grid; grid-template-columns: minmax(9rem, max-content) 1fr; gap: 0.9rem; }
+.kv dt { color: var(--muted); font-weight: 600; }
+.kv dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .kv__row { grid-template-columns: 1fr; gap: 0; } }
+
+/* 7. Status chips: semantic tokens and always a word */
+.chip { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.1rem 0.6rem; border-radius: 999px; border: 1px solid var(--border); font-size: 0.75rem; font-weight: 700; color: var(--text); vertical-align: middle; }
+.chip--ok { color: var(--status-ok); border-color: var(--status-ok); }
+.chip--warn { color: var(--status-warn); border-color: var(--status-warn); }
+.chip--info { color: var(--status-info); border-color: var(--status-info); }
+.chip--danger { color: var(--danger-text); border-color: var(--danger-text); }
+.chip .dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: currentColor; }
+
+/* Collapsible sections (remembered open/closed) */
+.collapse { margin: 0.75rem 0; }
+.collapse__heading { margin: 0; font-size: 1.05rem; }
+.collapse .collapse .collapse__heading { font-size: 0.95rem; }
+.collapse__toggle { width: 100%; text-align: left; font-size: inherit; font-weight: 700; }
+.collapse__body { padding: 0.5rem 0.25rem 0.25rem; }
+.collapse__body .collapse { margin-left: 0.5rem; }
+.step-label { margin: 0.75rem 0 0.25rem; font-weight: 700; }
+.steps { padding-left: 1.25rem; }
+
+/* Copyable code rows and command cards */
+.code-row { display: flex; gap: 0.5rem; align-items: center; justify-content: space-between; padding: 0.4rem 0.6rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); }
+.code-row code { overflow-wrap: anywhere; min-width: 0; }
+.code-row button { flex: none; min-height: 32px; padding: 4px 10px; }
+.cmd__top { display: flex; justify-content: space-between; gap: 0.5rem; align-items: flex-start; }
+.cmd__top button { min-height: 32px; padding: 4px 10px; flex: none; }
+.cmd__label { display: block; margin: 0.4rem 0; font-size: 0.78rem; overflow-wrap: anywhere; color: var(--text-body); }
+.cmd__run { width: 100%; }
+
+/* Run output */
+.output { margin-top: 1rem; }
+.run-status { position: sticky; top: 0; z-index: 2; display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.prereqs { padding-left: 0; list-style: none; display: grid; gap: 0.5rem; }
+.prereqs li { border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.75rem; background: var(--surface); }
+.prereqs__top { display: flex; justify-content: space-between; gap: 0.5rem; align-items: center; }
+.prereqs__top button { min-height: 32px; padding: 4px 10px; }
+.prereqs__cmd { display: block; overflow-wrap: anywhere; margin-top: 0.25rem; }
+.tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0.25rem 0 0.5rem; }
+.terminal { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.terminal__head { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.terminal__prompt { overflow-wrap: anywhere; min-width: 0; flex: 1 1 16rem; color: var(--text); }
+.terminal__body { margin: 0; padding: 0.75rem 1rem; max-height: 480px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.8rem; color: var(--text); }
+.editor__bar { display: flex; gap: 0.5rem; align-items: center; padding: 0.35rem 0.75rem; border-bottom: 1px solid var(--border); }
+.editor__bar button { min-height: 28px; padding: 2px 10px; margin-left: auto; }
+.editor__content { display: flex; max-height: 480px; overflow: auto; }
+.editor__lines { display: flex; flex-direction: column; text-align: right; padding: 0.75rem 0.5rem; color: var(--muted); font-family: var(--font-mono); font-size: 0.8rem; user-select: none; border-right: 1px solid var(--border); }
+.editor__code { margin: 0; padding: 0.75rem 1rem; font-size: 0.8rem; white-space: pre; color: var(--text); min-width: 0; }
+.j-key { color: var(--status-info); }
+.j-str { color: var(--status-ok); }
+.j-num, .j-bool { color: var(--status-warn); }
+.j-null { color: var(--muted); }
+.results { padding: 0.5rem 0.75rem; }
+.results__head { margin: 0.25rem 0; }
+.scroll { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.tbl th, .tbl td { text-align: left; padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--border); vertical-align: top; overflow-wrap: anywhere; }
+.tbl th { color: var(--muted); }
+
+/* Story, talk track, presenter */
+.facts { padding-left: 1rem; }
+.facts li { margin: 0.4rem 0; }
+.talk { padding-left: 1.25rem; max-width: 80ch; }
+.talk h2 { font-size: 1.05rem; margin: 1rem 0 0.25rem; }
+.talk p { margin: 0; }
+.presenter-say { border: 1px solid var(--border); border-left: 4px solid var(--status-info); border-radius: 8px; background: var(--surface); padding: 0.5rem 1rem; margin: 0.75rem 0; }
+.app--presenter { font-size: 17px; }
+.app--presenter .page-head h1 { font-size: 1.9rem; }
+.app--presenter .presenter-say p { font-size: 1.1rem; }
+.app--presenter .card h3 { font-size: 1.15rem; }
+
+/* Diagram (generic PatternDiagram, copied with the scaffold) */
+.pat__title { margin: 0 0 4px; font-size: 1.1rem; }
+.intro { color: var(--muted); }
+.track__now { border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 0.5rem 0.9rem; margin: 0.5rem 0; background: var(--surface); }
+.track__now h3 { margin: 0 0 0.25rem; font-size: 1rem; }
+.track__now p { margin: 0; }
+.keys { color: var(--muted); font-size: 0.8rem; }
+
+@media (max-width: 480px) {
+  .page-head h1 { font-size: 1.25rem; }
+  .shell-right { gap: 0.35rem; }
+}
+
+/* Diagram boxes (pattern 8): dark box tokens in BOTH themes with on-box text, one per diagram group. */
+.pat-node--client, .pat-node--lab, .pat-node--cli, .pat-node--pingone { color: var(--on-box); border: 1px solid var(--border); border-radius: 8px; }
+.pat-node--client { background: var(--box-grey); }
+.pat-node--lab { background: var(--box-dark); }
+.pat-node--cli { background: var(--box-red); }
+.pat-node--pingone { background: var(--box-blue); }
+.pat-node--client .pat-node__sub, .pat-node--lab .pat-node__sub, .pat-node--cli .pat-node__sub, .pat-node--pingone .pat-node__sub { color: var(--on-box); }
+.run-error { margin: 0.5rem 0; overflow-wrap: anywhere; }
+.terminal__note { margin: 0; padding: 0.5rem 0.75rem; border-top: 1px solid var(--border); font-size: 0.85rem; }
+
+/* The result panel sits under the category whose card was run, spanning the grid width. */
+.collapse__body > .output { margin-top: 0.75rem; }
+.collapse__badge { display: inline-flex; gap: 0.35rem; flex-wrap: wrap; margin-left: 0.5rem; vertical-align: middle; font-size: 0.85rem; }
+.collapse__heading { display: flex; align-items: center; flex-wrap: wrap; gap: 0.25rem; }
+.collapse__heading .collapse__toggle { flex: 1 1 14rem; width: auto; }
+.chain { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; margin: 0.5rem 0; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.chain__step { white-space: nowrap; }
+.chain__cmd { display: inline; min-width: 0; }
+.chain__cmd code { overflow-wrap: anywhere; min-width: 0; }
+.chain__cmd button { min-height: 28px; padding: 2px 10px; }
