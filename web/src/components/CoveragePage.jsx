@@ -34,19 +34,36 @@ function RealHowTo({ info }) {
   );
 }
 
+// Column labels for the table datasets. The ASI columns get their deck wording; anything else
+// (live-evidence's check/source/result/note) shows its own key, so a row never renders "undefined".
+const COLUMN_LABELS = { id: "ID", threat: "Threat", coveredBy: "Covered by", how: "How", check: "Check", source: "Source", result: "Result", note: "Note" };
+
+function tableColumns(rows) {
+  const present = [];
+  for (const r of rows) for (const k of Object.keys(r || {})) if (!present.includes(k)) present.push(k);
+  const preferred = ["id", "threat", "coveredBy", "check", "source", "result", "how", "note"];
+  const cols = preferred.filter((k) => present.includes(k));
+  for (const k of present) { if (cols.length >= 6) break; if (!cols.includes(k)) cols.push(k); }
+  return cols.slice(0, 6);
+}
+
 function CoverageTable({ rows, footnote }) {
+  const cols = tableColumns(rows);
   return (
     <div className="results" data-testid="coverage-table">
       <div className="scroll">
         <table className="tbl">
-          <thead><tr><th scope="col">ID</th><th scope="col">Threat</th><th scope="col">Covered by</th><th scope="col">How</th></tr></thead>
+          <thead><tr>{cols.map((c) => <th key={c} scope="col">{COLUMN_LABELS[c] || c}</th>)}</tr></thead>
           <tbody>
-            {rows.map((r) => (
-              <tr key={r.id} data-testid={`row-${r.id}`}>
-                <td className="mono id-cell">{visible(String(r.id))}</td>
-                <td>{visible(String(r.threat))}</td>
-                <td><span className={`chip ${r.state === "gap stated" ? "chip--warn" : "chip--ok"}`}><span className="dot" aria-hidden="true" />{visible(String(r.coveredBy))}{r.state === "gap stated" ? " · gap stated" : ""}</span></td>
-                <td className={r.state === "gap stated" ? "gap-cell" : ""}>{visible(String(r.how))}</td>
+            {rows.map((r, i) => (
+              <tr key={r.id ?? r.check ?? i} data-testid={`row-${r.id ?? r.check ?? i}`}>
+                {cols.map((c) => (
+                  <td key={c} className={`${c === "id" ? "mono id-cell" : ""}${r.state === "gap stated" && c === "how" ? " gap-cell" : ""}`}>
+                    {c === "coveredBy" && r.state !== undefined
+                      ? <span className={`chip ${r.state === "gap stated" ? "chip--warn" : "chip--ok"}`}><span className="dot" aria-hidden="true" />{visible(String(r[c] ?? ""))}{r.state === "gap stated" ? " · gap stated" : ""}</span>
+                      : visible(String(r[c] ?? ""))}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
@@ -117,6 +134,7 @@ export default function CoveragePage({ info, vertical, dataSignal = 0, resetSign
   const seenReset = useRef(resetSignal);
   useEffect(() => { if (seenReset.current !== resetSignal) { seenReset.current = resetSignal; clearRun(); } }, [resetSignal, clearRun]);
   useEffect(() => () => abortRef.current?.abort(), []);
+
 
   useEffect(() => {
     if (!focusKey) return;
@@ -202,6 +220,14 @@ export default function CoveragePage({ info, vertical, dataSignal = 0, resetSign
       setRunStatus({ phase: "done", key: commandKey, label: human, exitCode: finalExit === null ? 0 : finalExit });
     }
   };
+
+  // The slide-21 table is the point of the page: load it once the catalog is in, without a click.
+  const autoLoaded = useRef(false);
+  useEffect(() => {
+    if (autoLoaded.current || commands.length === 0) return;
+    autoLoaded.current = true;
+    run("coverage-table");
+  }, [commands, run]);
 
   const showResult = running !== null || exitCode !== null || output !== "";
   const resultCategory = activeKey ? byKey[activeKey]?.category : null;
