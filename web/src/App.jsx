@@ -6,6 +6,8 @@ import TraceTab from "./components/TraceTab";
 import TalkTrack from "./components/TalkTrack";
 import ModeToggle from "./components/ModeToggle";
 import ThemeToggle from "./components/ThemeToggle";
+import TopMenu from "./top-menu/TopMenu.jsx";
+import "./top-menu/top-menu.css";
 import ShelfLink from "./components/ShelfLink";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { getJson, resetWorkspace, setMode } from "./api";
@@ -93,10 +95,14 @@ export default function App() {
           {TABS.map((t) => <a key={t.id} href={`#${t.id}`} aria-current={tab === t.id ? "page" : undefined} data-testid={`nav-${t.id}`} onClick={(e) => { e.preventDefault(); go(t.id); }}>{t.label}</a>)}
         </nav>
         <span className="shell-right">
-          <ShelfLink />
-          <ModeToggle info={info} onSwitch={switchTo} busy={switching} />
-          <button type="button" aria-pressed={presenter} onClick={() => setPresenter((v) => !v)} data-testid="presenter">{presenter ? "Exit presenter" : "Presenter"}</button>
-          <ThemeToggle />
+          <TopMenu
+            mode={{ value: real ? "real" : "mock", onChange: (m) => switchTo(m), realAvailable: null }}
+            theme={undefined}
+            present={{ active: presenter, onToggle: () => setPresenter((v) => !v), label: "Presenter" }}
+            onReset={reset}
+          >
+            <ShelfLink />
+          </TopMenu>
         </span>
       </header>
       <main className="page">
