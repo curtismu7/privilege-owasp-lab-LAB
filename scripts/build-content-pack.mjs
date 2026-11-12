@@ -9,7 +9,7 @@ import { buildStory } from '../server/src/story.js';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { version } = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
 // Family-plan catalog id: to be assigned by the owner at ship time (the shelf PR carries it).
-export const CATALOG = 'D000';
+export const CATALOG = 'D129';
 
 export function buildPack() {
   const story = buildStory(DEFAULT_CAST);
