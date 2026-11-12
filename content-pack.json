@@ -6,7 +6,7 @@
   "demo": {
     "id": "privilege-owasp-lab",
     "name": "Privilege OWASP Lab",
-    "catalog": "D000",
+    "catalog": "D129",
     "baseUrl": "http://localhost:7811",
     "doctor": "/api/health",
     "tags": [

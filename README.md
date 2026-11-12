@@ -2,7 +2,7 @@
 
 Tier: Tester.
 Repo: https://github.com/curtismu7/privilege-owasp-lab-LAB
-Catalog: D000 (placeholder until the owner assigns one)
+Catalog: D129
 
 The OWASP Agentic AI Top 10 (ASI01–ASI10) with what PingOne Privilege covers. The lab serves the slide-21 coverage table from the PingOne Privilege Capability Overview deck (2 Nov 2026): one row per ASI category with the Privilege component that covers it (the Gateway, AIGuard, or both) and how, plus ten explained category cards and the Gateway vs AIGuard split. The two stated gaps (ASI04 fingerprint pinning pending, ASI06 gateway integration in progress) are labelled as gaps, never as coverage.
 
@@ -66,7 +66,7 @@ Open http://127.0.0.1:7811/ (the server serves the built page itself). `GET /api
 
 ## Catalog
 
-Catalog id **D000** (placeholder; the owner assigns one at ship time): in the shelf entry and the Learning Hub content pack.
+Catalog id **D129** (assigned 2026-11-12): in the shelf entry and the Learning Hub content pack.
 
 ## Ports, and what to do if the port is taken
 
