@@ -79,11 +79,12 @@ try {
     expect(await page.getByText('gap stated').count() >= 2, 'the gap chips are missing from the table');
   });
 
-  await check('theme toggle switches <html data-theme> to dark and back', async () => {
-    const before = await page.evaluate(() => document.documentElement.dataset.theme);
-    await page.getByTestId('theme-toggle').click();
-    const after = await page.evaluate(() => document.documentElement.dataset.theme);
-    expect(before === 'light' && after === 'dark', `${before} -> ${after}`);
+  await check('theme select switches <html data-theme> to dark and back', async () => {
+    await page.getByTestId('theme-select').selectOption('light');
+    const light = await page.evaluate(() => document.documentElement.dataset.theme);
+    await page.getByTestId('theme-select').selectOption('dark');
+    const dark = await page.evaluate(() => document.documentElement.dataset.theme);
+    expect(light === undefined && dark === 'dark', `light=${light} dark=${dark}`);
     const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     expect(bg !== 'rgb(252, 252, 252)', 'body did not change colour');
   });
@@ -130,7 +131,7 @@ try {
     expect(/timed out after 15000 ms/.test(await page.getByTestId('run-error').textContent()), 'no reason line');
     expect((await page.getByTestId('raw-output').textContent()).startsWith('[[[['), 'deep JSON not shown as raw text');
     expect(await page.locator('header.shell-bar').isVisible(), 'shell bar gone');
-    expect(await page.getByTestId('mode-toggle').isVisible(), 'mode toggle gone');
+    expect(await page.getByTestId('mode-select').isVisible(), 'mode toggle gone');
     expect(await page.getByTestId('banner').isVisible(), 'banner gone');
     await page.unroute('**/api/stream?*');
   });
@@ -145,7 +146,7 @@ try {
     await p.getByTestId('exit-chip').waitFor({ timeout: 15000 });
     const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(over <= 0, `page scrolls sideways by ${over}px`);
-    expect(await p.getByTestId('mode-real').isVisible(), 'toggle not visible');
+    expect(await p.getByTestId('mode-select').isVisible(), 'toggle not visible');
     expect(await p.getByTestId('nav-diagram').isVisible(), 'nav not visible');
     await shot(p, 'mobile-375-dark');
     await m.close();

@@ -32,6 +32,11 @@ const tabFromHash = () => {
 
 export default function App() {
   const [vertical, setVertical] = useState("retail");
+  const [theme, setTheme] = useState(() => { try { return localStorage.getItem("theme") || "auto"; } catch { return "auto"; } });
+  useEffect(() => {
+    const dark = theme === "dark" || (theme === "auto" && window.matchMedia?.("(prefers-color-scheme: dark)").matches);
+    if (dark) document.documentElement.dataset.theme = "dark"; else delete document.documentElement.dataset.theme;
+  }, [theme]);
   const [story, setStory] = useState(null);
   const [info, setInfo] = useState(undefined); // undefined = loading, null = failed
   const [tab, setTab] = useState(tabFromHash);
@@ -96,8 +101,8 @@ export default function App() {
         </nav>
         <span className="shell-right">
           <TopMenu
-            mode={{ value: real ? "real" : "mock", onChange: (m) => switchTo(m), realAvailable: null }}
-            theme={undefined}
+            mode={{ value: real ? "real" : "mock", onChange: (m) => switchTo(m), realAvailable: info ? info.realAvailable !== false : null, realHint: info?.realHowTo || info?.realReason || undefined }}
+            theme={{ value: theme, onChange: setTheme }}
             present={{ active: presenter, onToggle: () => setPresenter((v) => !v), label: "Presenter" }}
             onReset={reset}
           >
@@ -117,7 +122,6 @@ export default function App() {
                 </select>
               </label>
             )}
-            <button type="button" className="danger-text" onClick={reset} data-testid="reset">Reset</button>
           </div>
         </div>
         <p className="sr-only" role="status" aria-live="polite">{notice}</p>
