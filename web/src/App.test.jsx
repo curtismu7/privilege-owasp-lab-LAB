@@ -89,27 +89,27 @@ describe("shell, banner and mode", () => {
     expect(within(bar).getByTestId("nav-coverage")).toHaveAttribute("aria-current", "page");
   });
 
-  test("Real unconfigured: the Real button is disabled with the how-to as its tooltip, and the how-to card shows", async () => {
+  test("Real unconfigured: the Real option is disabled with the how-to as its tooltip, and the how-to card shows", async () => {
     render(<App />);
     const real = await screen.findByTestId("mode-real");
     expect(real).toBeDisabled();
     expect(real.getAttribute("title")).toMatch(/PINGONE_ENVIRONMENT_ID/);
-    expect(screen.getByTestId("mode-mock")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("mode-select")).toHaveValue("mock");
     expect(await screen.findByTestId("real-howto")).toHaveTextContent(/Real mode is not configured/);
   });
 
   test("the toggle switches both ways through POST /api/mode and reloads every panel's data", async () => {
     server = fakeServer({ realAvailable: true }); vi.stubGlobal("fetch", server.fetch);
     render(<App />);
-    const real = await screen.findByTestId("mode-real");
-    await waitFor(() => expect(real).not.toBeDisabled());
+    const select = screen.getByTestId("mode-select");
+    await waitFor(() => expect(screen.getByTestId("mode-real")).not.toBeDisabled());
     const before = server.calls.filter((c) => c === "GET /api/commands").length;
-    fireEvent.click(real);
+    fireEvent.change(select, { target: { value: "real" } });
     await waitFor(() => expect(screen.getByTestId("mode-badge").textContent).toBe("Real"));
     expect(server.calls).toContain("POST /api/mode");
     await waitFor(() => expect(server.calls.filter((c) => c === "GET /api/commands").length).toBeGreaterThan(before));
     expect(screen.getByTestId("banner")).toHaveAttribute("data-state", "live");
-    fireEvent.click(screen.getByTestId("mode-mock"));
+    fireEvent.change(screen.getByTestId("mode-select"), { target: { value: "mock" } });
     await waitFor(() => expect(screen.getByTestId("mode-badge").textContent).toBe("Mock"));
     expect(screen.getByTestId("banner")).not.toHaveAttribute("data-state");
   });
@@ -117,9 +117,9 @@ describe("shell, banner and mode", () => {
   test("a 409 from /api/mode is reported and the mode stays Mock", async () => {
     server = fakeServer({ realAvailable: true, refuseReal: true }); vi.stubGlobal("fetch", server.fetch);
     render(<App />);
-    const real = await screen.findByTestId("mode-real");
-    await waitFor(() => expect(real).not.toBeDisabled());
-    fireEvent.click(real);
+    const select = screen.getByTestId("mode-select");
+    await waitFor(() => expect(screen.getByTestId("mode-real")).not.toBeDisabled());
+    fireEvent.change(select, { target: { value: "real" } });
     expect(await screen.findByTestId("notice")).toHaveTextContent(/Real is not configured/);
     expect(screen.getByTestId("mode-badge").textContent).toBe("Mock");
   });
@@ -200,7 +200,7 @@ describe("review fixes", () => {
     expect(screen.getByTestId("raw-output").textContent.startsWith("[[[[")).toBe(true);
     expect(document.querySelector("header.shell-bar")).toBeTruthy();
     expect(screen.getByTestId("banner")).toBeTruthy();
-    expect(screen.getByTestId("mode-toggle")).toBeTruthy();
+    expect(screen.getByTestId("mode-select")).toBeTruthy();
   });
 
   test("a render failure in the output shows an error card and keeps the page (error boundary)", async () => {
