@@ -8,6 +8,7 @@ import { visible } from "../safeText";
 import { getJson } from "../api";
 import { workspaceFetch } from "../workspace";
 import ErrorBoundary from "./ErrorBoundary";
+import Json from "./Json";
 import { CollapsibleSection, openSection, scrollBehavior, parseSseBlock } from "./CoverageShared";
 
 // Re-exported so App.test keeps one import site for the shared pieces.
@@ -19,6 +20,25 @@ export const RUN_TIMEOUT_MS = 30000;
 export const MAX_OUTPUT_CHARS = 2_000_000;
 
 const GAP_IDS = new Set(["asi04", "asi06"]);
+
+// The dataset JSON goes through the shared JsonPane (Rule 24: Form | JSON, colours, full view). Two limits keep it safe:
+// - size: JsonPane colours every token as its own element, and a big list payload coloured that way wiped the terminal in AI-DEMO2
+//   (server/src/readable.js JSON_HIGHLIGHT_MAX_CHARS, 8000, measured; do not raise it without a measurement). Above it the output stays one text node.
+// - depth: the Form view recurses, so deeper than this is shown as text. The walk is iterative (a 50000-deep array overflows a recursive one).
+const JSON_PANE_MAX_CHARS = 8000;
+const MAX_JSON_DEPTH = 200;
+// What matters in this lab's payloads: who covers a threat, and whether the gap is stated.
+const DATASET_HOT = ["coveredBy", "state", "status"];
+function tooDeep(value) {
+  const stack = [[value, 1]];
+  while (stack.length) {
+    const [v, d] = stack.pop();
+    if (v === null || typeof v !== "object") continue;
+    if (d > MAX_JSON_DEPTH) return true;
+    for (const k of Object.keys(v)) stack.push([v[k], d + 1]);
+  }
+  return false;
+}
 
 function RealHowTo({ info }) {
   if (!info || info.realAvailable) return null;
@@ -97,10 +117,27 @@ function DataView({ output, running }) {
   // Easy read first: the dataset shapes are ours (coverage table, category form).
   let parsed = null;
   try { parsed = JSON.parse(output); } catch { /* streamed partial or text */ }
-  if (parsed && typeof parsed === "object" && parsed.data) {
-    if (Array.isArray(parsed.data.rows)) return <CoverageTable rows={parsed.data.rows} footnote={parsed.data.footnote} />;
-    if (Array.isArray(parsed.data.fields)) return <CategoryForm fields={parsed.data.fields} source={parsed.data.source} />;
+  const isStructured = parsed !== null && typeof parsed === "object";
+  const pane = isStructured && output.length <= JSON_PANE_MAX_CHARS && !tooDeep(parsed)
+    ? <Json value={output} label="Dataset JSON" testId="dataset-json" hot={DATASET_HOT} />
+    : null;
+  if (isStructured && parsed.data) {
+    const easy = Array.isArray(parsed.data.rows) ? <CoverageTable rows={parsed.data.rows} footnote={parsed.data.footnote} />
+      : Array.isArray(parsed.data.fields) ? <CategoryForm fields={parsed.data.fields} source={parsed.data.source} /> : null;
+    if (easy) {
+      return (
+        <>
+          {easy}
+          {pane && (
+            <div className="results">
+              <CollapsibleSection id="dataset-json" title="Raw JSON" defaultOpen={false} level={3}>{pane}</CollapsibleSection>
+            </div>
+          )}
+        </>
+      );
+    }
   }
+  if (pane) return <div className="results">{pane}</div>;
   return (
     <pre className="terminal__body" tabIndex={0} aria-label="Dataset output" data-testid="raw-output">{running ? "Running..." : output ? visible(output) : "(no output)"}</pre>
   );
