@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testi
 import App, { BANNER_UNKNOWN } from "./App";
 import { parseSseBlock } from "./components/CoverageShared";
 import ModeToggle from "./components/ModeToggle";
+import { setJsonView } from "./components/JsonPane";
 
 // A fake lab server: just enough of /api for the page, with SSE runs built from a script of frames.
 const TABLE = JSON.stringify({ schemaVersion: "1.1", status: "success", message: "OWASP Agentic AI Top 10 coverage (deck p.21)", data: { rows: [
@@ -64,6 +65,7 @@ beforeEach(() => {
   localStorage.clear();
   window.location.hash = "";
   delete document.documentElement.dataset.theme;
+  setJsonView("form"); // the Form | JSON choice is shared module state
   server = fakeServer();
   vi.stubGlobal("fetch", server.fetch);
 });
@@ -234,6 +236,70 @@ describe("review fixes", () => {
     render(<App />);
     await runTable();
     expect(screen.queryByTestId("run-error")).toBeNull();
+  });
+});
+
+describe("dataset JSON pane (Rule 24)", () => {
+  const openRaw = async () => {
+    const section = await screen.findByTestId("section-dataset-json");
+    fireEvent.click(within(section).getByRole("button", { name: /Raw JSON/ }));
+    return screen.findByTestId("dataset-json-box");
+  };
+
+  test("the table keeps the page; the exact JSON is one click away in the shared pane (Form | JSON, hot keys)", async () => {
+    render(<App />);
+    await runTable();
+    expect(screen.queryByTestId("dataset-json-box")).toBeNull(); // collapsed by default
+    const box = await openRaw();
+    expect(within(box).getAllByRole("button").map((b) => b.textContent)).toEqual(["Form", "JSON"]);
+    expect(box).toHaveAttribute("data-view", "form");
+    expect(within(box).getByTestId("dataset-json")).toHaveTextContent("Agent Goal Hijack");
+    fireEvent.click(within(box).getByRole("button", { name: "JSON" }));
+    const pre = await screen.findByTestId("dataset-json");
+    expect(pre.tagName).toBe("PRE");
+    expect(pre.textContent).toBe(TABLE); // exactly the text the lab streamed, never re-serialized
+    const hot = [...pre.querySelectorAll(".jtok--hot")].map((n) => n.textContent);
+    expect(hot).toEqual(expect.arrayContaining(['"coveredBy"', '"state"']));
+  });
+
+  test("a category form dataset gets the same pane", async () => {
+    render(<App />);
+    fireEvent.click(await screen.findByTestId("run-asi03"));
+    await screen.findByTestId("category-form");
+    const box = await openRaw();
+    fireEvent.click(within(box).getByRole("button", { name: "JSON" }));
+    expect((await screen.findByTestId("dataset-json")).textContent).toBe(FORM);
+  });
+
+  test("structured JSON that is not a table or form is the pane itself (no raw pre)", async () => {
+    const text = JSON.stringify({ status: "error", decision: "deny", reason: "not allowed" });
+    server = fakeServer({ runText: text }); vi.stubGlobal("fetch", server.fetch);
+    render(<App />);
+    fireEvent.click(await screen.findByTestId("run-coverage-table"));
+    const box = await screen.findByTestId("dataset-json-box");
+    await waitFor(() => expect(screen.getByTestId("exit-chip")).toHaveTextContent("exit 0"));
+    expect(screen.queryByTestId("raw-output")).toBeNull();
+    expect(within(box).getAllByRole("button").map((b) => b.textContent)).toEqual(["Form", "JSON"]);
+    fireEvent.click(within(box).getByRole("button", { name: "JSON" }));
+    expect((await screen.findByTestId("dataset-json")).textContent).toBe(text);
+  });
+
+  test("hostile nesting and oversized JSON stay inert text, not the pane (depth and size limits)", async () => {
+    const deep = `${"[".repeat(3000)}${"]".repeat(3000)}`; // under the size cap, over the depth cap
+    server = fakeServer({ runText: deep }); vi.stubGlobal("fetch", server.fetch);
+    render(<App />);
+    fireEvent.click(await screen.findByTestId("run-coverage-table"));
+    await waitFor(() => expect(screen.getByTestId("exit-chip")).toHaveTextContent("exit 0"));
+    expect(screen.getByTestId("raw-output").textContent.startsWith("[[[[")).toBe(true);
+    expect(screen.queryByTestId("dataset-json-box")).toBeNull();
+    cleanup();
+    const big = JSON.stringify({ status: "success", items: Array.from({ length: 800 }, (_, i) => ({ id: i, name: `item-${i}` })) });
+    expect(big.length).toBeGreaterThan(8000);
+    server = fakeServer({ runText: big }); vi.stubGlobal("fetch", server.fetch);
+    render(<App />);
+    fireEvent.click(await screen.findByTestId("run-coverage-table"));
+    expect((await screen.findByTestId("raw-output")).textContent).toBe(big);
+    expect(screen.queryByTestId("dataset-json-box")).toBeNull();
   });
 });
 

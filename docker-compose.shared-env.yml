@@ -1,0 +1,15 @@
+# Optional overlay: gives the container the one shared settings file (~/Development/.env), read-only,
+# so config.js's settingsFilePath() finds it (STANDALONE_ENV=/run/standalone.env).
+# Usage: docker compose -f docker-compose.yml -f docker-compose.shared-env.yml up -d
+services:
+  privilege-owasp-lab:
+    environment:
+      STANDALONE_ENV: /run/standalone.env
+      PINGCLI_BIN: ${PINGCLI_BIN:-/usr/local/bin/pingcli}
+    volumes:
+      - type: bind
+        source: ${STANDALONE_ENV:-${HOME}/Development/.env}
+        target: /run/standalone.env
+        read_only: true
+        bind:
+          create_host_path: false
