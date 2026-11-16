@@ -5,6 +5,7 @@ import { claimWorkspace } from "./workspace";
 import "./standalone-ui.css";
 import "./tokens.css";
 import "./components/JsonPane.css";
+import "./components/VerifyMark.css";
 import "./app.css";
 
 claimWorkspace(); // a duplicated tab gets its own workspace
