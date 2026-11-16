@@ -9,6 +9,7 @@ import ThemeToggle from "./components/ThemeToggle";
 import TopMenu from "./top-menu/TopMenu.jsx";
 import "./top-menu/top-menu.css";
 import ShelfLink from "./components/ShelfLink";
+import VerifyMark from "./components/VerifyMark";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { getJson, resetWorkspace, setMode } from "./api";
 
@@ -107,6 +108,7 @@ export default function App() {
             onReset={reset}
           >
             <ShelfLink />
+            <VerifyMark id="privilege-owasp-lab" />
           </TopMenu>
         </span>
       </header>
