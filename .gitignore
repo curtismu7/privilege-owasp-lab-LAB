@@ -8,3 +8,7 @@ coverage/
 .data/
 customer.config.json
 .tmp-cast.json
+
+# local-only runtime files (owner machine)
+.local/
+docker-compose.local-pingcli.yml
