@@ -7,6 +7,7 @@ import TalkTrack from "./components/TalkTrack";
 import ModeToggle from "./components/ModeToggle";
 import ThemeToggle from "./components/ThemeToggle";
 import TopMenu from "./top-menu/TopMenu.jsx";
+import TalkTrackDialog from "./talk-track/TalkTrackDialog.jsx";
 import "./top-menu/top-menu.css";
 import ShelfLink from "./components/ShelfLink";
 import VerifyMark from "./components/VerifyMark";
@@ -42,6 +43,7 @@ export default function App() {
   const [info, setInfo] = useState(undefined); // undefined = loading, null = failed
   const [tab, setTab] = useState(tabFromHash);
   const [presenter, setPresenter] = useState(false);
+  const [talkOpen, setTalkOpen] = useState(false);
   const [dataSignal, setDataSignal] = useState(0); // bump = every panel reloads its data
   const [resetSignal, setResetSignal] = useState(0); // bump = diagram positions and the run view go back to the start
   const [notice, setNotice] = useState("");
@@ -105,6 +107,7 @@ export default function App() {
             mode={{ value: real ? "real" : "mock", onChange: (m) => switchTo(m), realAvailable: info ? info.realAvailable !== false : null, realHint: info?.realHowTo || info?.realReason || undefined }}
             theme={{ value: theme, onChange: setTheme }}
             present={{ active: presenter, onToggle: () => setPresenter((v) => !v), label: "Presenter" }}
+          talkTrack={{ active: talkOpen, onToggle: () => setTalkOpen((v) => !v) }}
             onReset={reset}
           >
             <ShelfLink />
@@ -144,6 +147,8 @@ export default function App() {
         </div>
         <p className="muted foot">Talk track: <a href="#talk" onClick={(e) => { e.preventDefault(); go("talk"); }}>on screen</a> or <code>docs/talk-track.md</code>. Keys: P presenter, Esc leave.</p>
       </main>
+
+      <TalkTrackDialog isOpen={talkOpen} onClose={() => setTalkOpen(false)} talk={story?.talkTrack ?? []} />
     </div>
   );
 }
