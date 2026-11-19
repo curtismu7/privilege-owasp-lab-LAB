@@ -307,7 +307,7 @@ export default function CoveragePage({ info, vertical, dataSignal = 0, resetSign
     <div className="powasp">
       <p className="lede">The OWASP Agentic AI Top 10, with what PingOne Privilege covers. Pick a dataset to load it{info?.mode === "real" ? " (Real adds live, read-only evidence from your environment)" : " in Mock (static deck wording, nothing leaves this machine)"}.</p>
       <RealHowTo info={info} />
-      <CollapsibleSection id="coverage-table-section" title="1. The slide-21 coverage table" defaultOpen>
+      <CollapsibleSection id="coverage-table-section" title={<><span className="step-num" aria-hidden="true">1</span>The slide-21 coverage table</>} defaultOpen>
         <p className="hint">Ten rows, one per ASI category. Green pills for full coverage, amber for the two stated gaps. The deck's footnote sits under the table.</p>
         <div className="card-grid">
           <div className={`card${activeKey === "coverage-table" ? "" : " card--neutral"}`} id="card-coverage-table" data-testid="card-coverage-table">
@@ -330,7 +330,7 @@ export default function CoveragePage({ info, vertical, dataSignal = 0, resetSign
         {resultCategory === "Overview" && resultPanel}
       </CollapsibleSection>
 
-      <CollapsibleSection id="categories" title="2. The ten categories" forceOpen={resultPanel && resultCategory === "The ten categories" ? true : null}>
+      <CollapsibleSection id="categories" title={<><span className="step-num" aria-hidden="true">2</span>The ten categories</>} forceOpen={resultPanel && resultCategory === "The ten categories" ? true : null}>
         <p className="hint">One dataset per ASI category: the threat in plain language, who covers it, how, and the stated gap where there is one.</p>
         {loadError && <p className="error" role="alert">Could not load the datasets ({loadError}).</p>}
         <div className="card-grid cmd-grid">
@@ -353,7 +353,7 @@ export default function CoveragePage({ info, vertical, dataSignal = 0, resetSign
         {resultCategory === "The ten categories" && resultPanel}
       </CollapsibleSection>
 
-      <CollapsibleSection id="live-evidence-section" title="3. Live evidence (Real)" defaultOpen={false}>
+      <CollapsibleSection id="live-evidence-section" title={<><span className="step-num" aria-hidden="true">3</span>Live evidence (Real)</>} defaultOpen={false}>
         <p className="hint">Real mode fetches read-only evidence from your PingOne environment beside the static claims. Mock replays the placeholder checks.</p>
         <div className="card-grid">
           <div className={`card${activeKey === "live-evidence" ? "" : " card--neutral"}`} id="card-live-evidence" data-testid="card-live-evidence">
