@@ -12,7 +12,7 @@ services:
     environment:
       PORT: "7811"
       POWASP_BIND: 0.0.0.0
-      SHELF_URL: ${SHELF_URL:-http://127.0.0.1:4400}
+      SHELF_URL: ${SHELF_URL:-https://local.ping-devops.com:8443/demo-shelf}
       # The lab-proxy sends Host = the lab's own name and X-Forwarded-Host = the proxy's name; both must be listed.
       LAB_ALLOWED_HOSTS: ${LAB_ALLOWED_HOSTS:-privilege-owasp-lab.local.ping-devops.com,local.ping-devops.com}
       # Start mode. Empty = Real when the four settings below are usable, else Mock. POWASP_MODE=mock or =real forces one.
