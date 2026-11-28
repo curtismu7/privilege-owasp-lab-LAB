@@ -26,7 +26,7 @@ const COMMANDS = [
   { key: "asi03", title: "ASI03: Identity and Privilege Abuse", category: "The ten categories", label: "privilege-owasp dataset category", runnable: true, auth: true, prereqs: [{ title: "The source deck", command: "deck p.21" }, { title: "Run dataset", command: "privilege-owasp dataset category" }] },
   { key: "two-layers", title: "Gateway vs AIGuard", category: "Overview", label: "privilege-owasp dataset overview", runnable: true, auth: true, prereqs: [{ title: "The source deck", command: "deck p.21" }, { title: "Run dataset", command: "privilege-owasp dataset overview" }] },
 ];
-const STORY = (v) => ({ intro: `${v === "banking" ? "Dana Okafor at Fabrikam Bank" : "Jordan Ellis at Northwind Retail"} asks what Privilege covers.`, verticals: ["banking", "healthcare", "retail"], scenarios: [{ id: "asi03-identity-abuse", title: "ASI03: Identity and Privilege Abuse", commandKey: "asi03", say: "Least privilege for agents", lesson: "Per-user keys" }], facts: [{ id: "f", status: "UNVERIFIED", text: "summaries are ours" }], talkTrack: [{ title: "Open", say: "Say this first." }, { title: "Follow the hops", say: "Open the hops." }], tokenLabel: "MOCK" });
+const STORY = (v) => ({ intro: `${v === "banking" ? "Dana Okafor at Fabrikam Bank" : v === "retail" ? "Jordan Ellis at Northwind Retail" : "Priya Nair at AirGuard Airlines"} asks what Privilege covers.`, verticals: ["banking", "healthcare", "retail", "airlines"], scenarios: [{ id: "asi03-identity-abuse", title: "ASI03: Identity and Privilege Abuse", commandKey: "asi03", say: "Least privilege for agents", lesson: "Per-user keys" }], facts: [{ id: "f", status: "UNVERIFIED", text: "summaries are ours" }], talkTrack: [{ title: "Open", say: "Say this first." }, { title: "Follow the hops", say: "Open the hops." }], tokenLabel: "MOCK" });
 const sse = (frames, { trailing = true } = {}) => frames.map(([e, d]) => `event: ${e}\ndata: ${JSON.stringify(d)}`).join("\n\n") + (trailing ? "\n\n" : "");
 
 let server;
@@ -78,6 +78,15 @@ const runTable = async () => {
 };
 
 describe("shell, banner and mode", () => {
+  test("the default vertical is airlines: the picker shows it and the first story and commands calls ask for it", async () => {
+    render(<App />);
+    await waitFor(() => expect(screen.getByTestId("vertical")).toHaveValue("airlines"));
+    const asked = server.fetch.mock.calls.map(([u]) => String(u)).filter((u) => u.includes("vertical="));
+    expect(asked.length).toBeGreaterThan(0);
+    for (const u of asked) expect(u).toContain("vertical=airlines");
+    expect(screen.getByTestId("vertical")).toHaveTextContent("banking");
+  });
+
   test("the dark shell bar comes first, then the banner is the first thing in the page, before the title", async () => {
     render(<App />);
     const bar = document.querySelector("header.shell-bar");

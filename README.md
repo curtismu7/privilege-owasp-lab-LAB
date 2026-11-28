@@ -15,7 +15,7 @@ Derived from the AI-DEMO2 /privilege-owasp-top10 page (read-only source, never i
 One page with five tabs in the Ping UI standard (dark shell bar with the Ping Red rule, the simulation banner first on every tab and in presenter mode, Mock/Real toggle and theme toggle in the header, usable at 375px):
 
 - **Coverage**: the slide-21 table (ten rows, green pills for full coverage, amber for the two stated gaps, the deck's footnote under the table), the ten category cards each with a "gap stated" chip where the deck states one, and a live-evidence card for Real. Every dataset streams in as server-sent events and renders as the easy-read table or key/value form, always as React text (control, bidi and ANSI escape characters show as visible escapes; output is capped on the client too).
-- **Story**: the vertical picker (banking, healthcare, retail), scenarios that open their dataset, and every claim with its status.
+- **Story**: the vertical picker (airlines, the default and the AirGuard Airlines story; banking, healthcare, retail), scenarios that open their dataset, and every claim with its status.
 - **Diagram**: `coverage-flow` loaded by name from diagram-studio data (movable boxes, Simulate, speed, Reset positions).
 - **Trace**: the last run's hops in the shared evidence screens (sequence view, movie reel, step detail) with raw request/response and `traceparent`; Mock hops and tokens are labelled MOCK, Real redacts tokens.
 - **Talk track**, presenter mode (P / Esc) and Reset (stops the run, clears output and trace, restores diagram positions).
@@ -24,7 +24,7 @@ Shared code vendored, never imported: `web/src/evidence/` and `server/src/vendor
 
 ## Modes (rule 19: Mock, Real and a runtime toggle)
 
-**Mock (the default when Real is not configured; no tenant, no credentials, no network).** No binary runs and nothing leaves the machine. Every dataset is served in-process from the static deck wording, flavoured by the chosen vertical (banking, healthcare, retail), with made-up ids and `.example` hosts, streamed in a few chunks so it feels live. The live-evidence card replays placeholder checks labelled as pending Real.
+**Mock (the default when Real is not configured; no tenant, no credentials, no network).** No binary runs and nothing leaves the machine. Every dataset is served in-process from the static deck wording, flavoured by the chosen vertical (airlines by default, then banking, healthcare, retail), with made-up ids and `.example` hosts, streamed in a few chunks so it feels live. The live-evidence card replays placeholder checks labelled as pending Real.
 
 **Real (owner-run).** The coverage wording stays the static deck content; Real adds live evidence fetched read-only from your own PingOne environment:
 

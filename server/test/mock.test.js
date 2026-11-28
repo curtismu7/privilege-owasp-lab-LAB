@@ -71,6 +71,7 @@ test('verticals differ; mock UUIDs are stable and v4-shaped; chunks rejoin exact
   assert.notEqual(mockOutput('live-evidence', VERTICALS.retail).text, mockOutput('live-evidence', VERTICALS.banking).text);
   assert.equal(mockUuid('a', 1), mockUuid('a', 1));
   assert.match(mockEnvId(VERTICALS.retail), UUID);
+  assert.match(JSON.parse(mockOutput('live-evidence', VERTICALS.airlines).text).data.rows.map((r) => r.note).join(' '), /AirGuard Airlines environment/);
   const text = mockOutput('coverage-table', VERTICALS.banking).text;
   const chunks = mockChunks(text);
   assert.ok(chunks.length > 1, 'a table streams in several chunks');

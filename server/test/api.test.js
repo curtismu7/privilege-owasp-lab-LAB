@@ -193,7 +193,12 @@ test('GET /api/version in Mock is a labelled static-deck version; story and diag
     assert.equal(v.source, 'mock'); assert.match(v.note, /MOCK/);
     const s = await (await fetch(`${url}/api/story?vertical=healthcare`)).json();
     assert.match(s.intro, /Contoso Patient Access/);
-    assert.deepEqual(s.verticals, ['banking', 'healthcare', 'retail']);
+    assert.deepEqual(s.verticals, ['banking', 'healthcare', 'retail', 'airlines']);
+    const def = await (await fetch(`${url}/api/story`)).json();
+    assert.match(def.intro, /Priya Nair/, 'no vertical -> the airline default');
+    assert.match(JSON.stringify(def), /AirGuard Airlines/);
+    assert.equal(def.cast.castOrg, 'AirGuard Airlines');
+    assert.ok(!/Northwind|Fabrikam|Contoso|Meridian/.test(JSON.stringify(def)));
     assert.ok(!JSON.stringify(s).includes('{{'));
     assert.equal(s.cast.seed, undefined, 'the seed lists stay server-side');
     const d = await (await fetch(`${url}/api/diagram?vertical=banking`)).json();
@@ -201,7 +206,8 @@ test('GET /api/version in Mock is a labelled static-deck version; story and diag
     assert.ok(d.steps.length >= 5);
     assert.ok(!JSON.stringify(d).includes('{{'));
     const odd = await (await fetch(`${url}/api/story?vertical=__proto__`)).json();
-    assert.match(odd.intro, /Northwind/, 'unknown vertical -> default');
+    assert.match(odd.intro, /Priya Nair/, 'unknown vertical -> default');
+    assert.equal(odd.cast.castOrg, 'AirGuard Airlines');
   });
 });
 
