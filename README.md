@@ -12,7 +12,7 @@ Derived from the AI-DEMO2 /privilege-owasp-top10 page (read-only source, never i
 
 ## The page
 
-One page with five tabs in the Ping UI standard (dark shell bar with the Ping Red rule, the simulation banner first on every tab and in presenter mode, Mock/Real toggle and theme toggle in the header, usable at 375px):
+One page with five tabs in the Ping UI standard (dark shell bar with the Ping Red rule, the Mock or Real modal that opens the page (shared `mode-modal`), Mock/Real toggle and theme toggle in the header, usable at 375px):
 
 - **Coverage**: the slide-21 table (ten rows, green pills for full coverage, amber for the two stated gaps, the deck's footnote under the table), the ten category cards each with a "gap stated" chip where the deck states one, and a live-evidence card for Real. Every dataset streams in as server-sent events and renders as the easy-read table or key/value form, always as React text (control, bidi and ANSI escape characters show as visible escapes; output is capped on the client too).
 - **Story**: the vertical picker (airlines, the default and the AirGuard Airlines story; banking, healthcare, retail), scenarios that open their dataset, and every claim with its status.

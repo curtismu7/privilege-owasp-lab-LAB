@@ -12,6 +12,7 @@ import "./top-menu/top-menu.css";
 import ShelfLink from "./components/ShelfLink";
 import VerifyMark from "./components/VerifyMark";
 import ErrorBoundary from "./components/ErrorBoundary";
+import ModeModal from "./mode-modal/ModeModal.jsx";
 import { getJson, resetWorkspace, setMode } from "./api";
 
 export const TABS = [
@@ -21,8 +22,11 @@ export const TABS = [
   { id: "trace", label: "Trace", title: "Hops of the last run" },
   { id: "talk", label: "Talk track", title: "Talk track" },
 ];
-// The banner is never blank: until /api/info answers (or if it fails) it says the safe thing.
-export const BANNER_UNKNOWN = "MOCK until the server says otherwise: static deck wording, nothing leaves this machine.";
+// The Real-or-mock modal's lines (it replaces the old banner). MOCK until /api/info answers, and if it fails. The server still sends its own `banner` in /api/info and /api/story (server tests pin it); the page no longer reads it.
+export const MODE_LINES = {
+  mock: "Everything here is a mock: no PingOne tenant is contacted and nothing leaves this machine. Every coverage claim is static wording from the Privilege Capability Overview deck (page 21), and the category explanations are this lab's own summaries, not an OWASP rating.",
+  real: "The coverage wording is still the static deck content (the claims are not re-tested live); what is real is the evidence fetched read-only from your PingOne environment with worker credentials. The client secret is write-only: never shown, logged or returned.",
+};
 // Presenter mode: which talk-track sections go with which tab.
 const SAY = { coverage: ["The coverage table", "Read a category", "Name the gaps"], story: ["Open"], diagram: ["Follow the hops"], trace: ["Follow the hops"] };
 
@@ -93,7 +97,6 @@ export default function App() {
   const openCommand = (key) => { setFocusKey(key); go("coverage"); };
 
   const real = info?.mode === "real";
-  const banner = info?.banner || BANNER_UNKNOWN;
   const current = TABS.find((t) => t.id === tab);
   return (
     <div className={`app${presenter ? " app--presenter" : ""}`}>
@@ -116,7 +119,6 @@ export default function App() {
         </span>
       </header>
       <main className="page">
-        <p className="banner" role="note" data-state={real ? "live" : undefined} data-testid="banner">{banner}</p>
         <div className="page-head">
           <h1>{current.title}</h1>
           <div className="page-tools">
@@ -147,6 +149,7 @@ export default function App() {
         </div>
         <p className="muted foot">Talk track: <a href="#talk" onClick={(e) => { e.preventDefault(); go("talk"); }}>on screen</a> or <code>docs/talk-track.md</code>. Keys: P presenter, Esc leave.</p>
       </main>
+      <ModeModal mode={real ? "real" : "mock"} lines={MODE_LINES} storageKey="powasp-mode" />
 
       <TalkTrackDialog isOpen={talkOpen} onClose={() => setTalkOpen(false)} talk={story?.talkTrack ?? []} />
     </div>

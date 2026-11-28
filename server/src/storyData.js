@@ -52,7 +52,7 @@ export const SCENARIOS = [
 ];
 
 export const TALK_TRACK = [
-  { title: 'Open', say: 'This is {{castOrg}}. {{castAdmin}} needs to answer one question: what does PingOne Privilege actually cover in the OWASP Agentic AI Top 10? The banner says whether we are in Mock or Real.' },
+  { title: 'Open', say: 'This is {{castOrg}}. {{castAdmin}} needs to answer one question: what does PingOne Privilege actually cover in the OWASP Agentic AI Top 10? The modal that opens the page says whether we are in Mock or Real.' },
   { title: 'The coverage table', say: 'Start with the slide-21 table: ten rows, one per ASI category. Green pills for full coverage, amber for the two stated gaps. The footnote says ASI08 is met by real-time event data to your observability stack.' },
   { title: 'Read a category', say: 'Open ASI03. The card explains the threat in plain language, names Gateway + AIGuard, and says how: per-user virtual keys, least-privilege scopes, RBAC, live revocation.' },
   { title: 'Name the gaps', say: 'ASI04 and ASI06 carry gap chips. Fingerprint pinning is pending; memory-write inspection runs in AIGuard today and the gateway integration is in progress. A lab that hides a gap is not a lab you can trust.' },

@@ -19,7 +19,7 @@ function stubShelf(payload) {
 }
 
 beforeEach(() => { localStorage.clear(); window.location.hash = ""; });
-afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); sessionStorage.clear(); });
 
 describe("verification mark in the header", () => {
   test("shows this lab's own mark beside the Shelf link, and no other lab's", async () => {
