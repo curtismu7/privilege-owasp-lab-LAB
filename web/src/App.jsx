@@ -141,7 +141,7 @@ export default function App() {
           {/* Kept mounted on every tab, so a run streams on while the presenter shows the trace or the diagram. */}
           <div hidden={tab !== "coverage"}><ErrorBoundary resetKey={`${dataSignal}-${resetSignal}`} title="The coverage panel could not be shown" testId="commands-error"><CoveragePage info={info} vertical={vertical} dataSignal={dataSignal} resetSignal={resetSignal} presenter={presenter} onRunDone={setLastRun} focusKey={focusKey} /></ErrorBoundary></div>
           {tab === "story" && (story ? <ErrorBoundary><StoryTab story={story} onOpenCommand={openCommand} /></ErrorBoundary> : <p className="muted">Loading...</p>)}
-          {tab === "diagram" && <ErrorBoundary resetKey={resetSignal}><DiagramTab vertical={vertical} resetSignal={resetSignal} /></ErrorBoundary>}
+          {tab === "diagram" && <ErrorBoundary resetKey={resetSignal}><DiagramTab vertical={vertical} resetSignal={resetSignal} run={lastRun} /></ErrorBoundary>}
           {tab === "trace" && <ErrorBoundary resetKey={lastRun}><TraceTab run={lastRun} /></ErrorBoundary>}
           {tab === "talk" && (story ? <TalkTrack talk={story.talkTrack} /> : <p className="muted">Loading...</p>)}
         </div>
