@@ -1,14 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { CAST_TOKENS, DEFAULT_CAST, VERTICALS, fill, loadCast, unfilled } from '../src/cast.js';
+import { CAST_TOKENS, DEFAULT_CAST, DEFAULT_VERTICAL, VERTICALS, fill, loadCast, unfilled, verticalFrom } from '../src/cast.js';
 import { buildStory, rawStory, renderTalkTrackMarkdown } from '../src/story.js';
 import { DATASETS } from '../src/commands.js';
 import { BANNER, FACTS, SCENARIOS } from '../src/storyData.js';
-import { rawDiagram } from '../src/diagramData.js';
+import { rawDiagram, buildDiagram } from '../src/diagramData.js';
+import { mockOutput } from '../src/mockOutput.js';
 
-test('every {{token}} in the story and the diagram is defined in every vertical pack; three verticals', () => {
-  assert.deepEqual(Object.keys(VERTICALS), ['banking', 'healthcare', 'retail']);
+test('every {{token}} in the story and the diagram is defined in every vertical pack; four verticals', () => {
+  assert.deepEqual(Object.keys(VERTICALS), ['banking', 'healthcare', 'retail', 'airlines']);
   const text = JSON.stringify([rawStory(), rawDiagram('coverage-flow')]);
   assert.ok(/\{\{cast/.test(text));
   for (const [name, cast] of Object.entries(VERTICALS)) {
@@ -16,6 +17,32 @@ test('every {{token}} in the story and the diagram is defined in every vertical 
     for (const t of CAST_TOKENS) assert.equal(typeof cast[t], 'string', `${name}.${t}`);
   }
   assert.ok(!JSON.stringify(buildStory(DEFAULT_CAST)).includes('{{'));
+});
+
+test('the default vertical is airlines (AirGuard Airlines); an unknown id falls back to it; saved finance-era ids still work', () => {
+  assert.equal(DEFAULT_VERTICAL, 'airlines');
+  assert.equal(DEFAULT_CAST.castOrg, 'AirGuard Airlines');
+  assert.equal(DEFAULT_CAST.castHost, 'airguard');
+  assert.equal(verticalFrom(undefined), 'airlines');
+  assert.equal(verticalFrom('__proto__'), 'airlines');
+  assert.equal(verticalFrom('nope'), 'airlines');
+  for (const id of ['banking', 'healthcare', 'retail', 'airlines']) assert.equal(verticalFrom(id), id);
+  assert.equal(loadCast(null).castOrg, 'AirGuard Airlines');
+  assert.equal(loadCast(null, 'retail').castOrg, 'Northwind Retail');
+  assert.equal(loadCast(null, 'banking').castOrg, 'Fabrikam Bank');
+  assert.equal(loadCast(null, 'healthcare').castOrg, 'Contoso Health');
+});
+
+// Retired names: no other pack's brand, host or admin, and no earlier airline brand, may appear in the airline run.
+const RETIRED = ['Meridian Air', 'Meridian Journeys', 'Skyline Air', 'Northwind', 'Fabrikam', 'Contoso', 'Harbor', 'Vellum', 'Tessera', 'Dana Okafor', 'Jordan Ellis', 'Sam Whitfield', 'Storefront'];
+test('the airline run (story, diagram, every Mock dataset, the talk track, the seed) carries AirGuard Airlines and no retired or other-pack name', () => {
+  const cast = DEFAULT_CAST;
+  const rendered = JSON.stringify([buildStory(cast), buildDiagram(cast), renderTalkTrackMarkdown(cast), cast.seed,
+    ...Object.keys(DATASETS).map((k) => mockOutput(k, cast).text)]);
+  assert.match(rendered, /AirGuard Airlines/);
+  assert.match(rendered, /Priya Nair/);
+  for (const name of RETIRED) assert.ok(!rendered.includes(name), `retired name in the airline run: ${name}`);
+  assert.ok(!/\{\{/.test(rendered), 'no unfilled token');
 });
 
 test('an undefined token is caught', () => {

@@ -37,8 +37,17 @@ export const VERTICALS = {
       populations: [['Shoppers', 'Customer accounts'], ['Associates', 'Staff identities']],
     },
   },
+  airlines: {
+    castOrg: 'AirGuard Airlines', castAdmin: 'Priya Nair', castEnvName: 'AirGuard Passenger Services', castHost: 'airguard',
+    seed: {
+      users: [['Emma', 'Hartley'], ['Noah', 'Reyes'], ['Grace', 'Okafor'], ['Dana', 'Olsen'], ['Alice', 'Chen']],
+      apps: [['Booking Web', 'WEB_APP'], ['Passenger Mobile App', 'NATIVE_APP'], ['Gate Agent SPA', 'SINGLE_PAGE_APP'], ['Rebooking Worker', 'WORKER']],
+      groups: [['Gate Agents', 'Agents at the airport gates'], ['Gold Tier', 'Frequent flyers in the gold tier'], ['Disruption Desk', 'Rebooking and refunds during disruption']],
+      populations: [['Passengers', 'Passenger accounts'], ['Airline Staff', 'Staff identities']],
+    },
+  },
 };
-export const DEFAULT_VERTICAL = 'retail';
+export const DEFAULT_VERTICAL = 'airlines';
 export const DEFAULT_CAST = VERTICALS[DEFAULT_VERTICAL];
 export const CAST_TOKENS = ['castOrg', 'castAdmin', 'castEnvName', 'castHost'];
 

@@ -33,7 +33,7 @@ const tabFromHash = () => {
 };
 
 export default function App() {
-  const [vertical, setVertical] = useState("retail");
+  const [vertical, setVertical] = useState("airlines");
   const [theme, setTheme] = useState(() => { try { return localStorage.getItem("theme") || "auto"; } catch { return "auto"; } });
   useEffect(() => {
     const dark = theme === "dark" || (theme === "auto" && window.matchMedia?.("(prefers-color-scheme: dark)").matches);
