@@ -4,7 +4,7 @@
 
 ## Open
 
-This is AirGuard Airlines. Priya Nair needs to answer one question: what does PingOne Privilege actually cover in the OWASP Agentic AI Top 10? The banner says whether we are in Mock or Real.
+This is AirGuard Airlines. Priya Nair needs to answer one question: what does PingOne Privilege actually cover in the OWASP Agentic AI Top 10? The modal that opens the page says whether we are in Mock or Real.
 
 ## The coverage table
 
